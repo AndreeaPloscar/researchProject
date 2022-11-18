@@ -287,11 +287,17 @@ Changes in the weather conditions are often times linked to atmospheric fronts p
 
 The problem of predicting a sudden increase in the incidence of strokes  can be seen as a classification problem and a possible approach for this is using an artificial neural network. This ANN receives as input the weather conditions for a day and outputs 1 or 0, 1 if this day corresponds to an increase in stroke incidence, i.e. the conditions for this day match the previously learned model for days correlated to a larger number of patients admitted, 0 otherwise. 
 
-\newpage
-\subsection{Experiments}
 
-To measure the performance of the algorithms and the validity of the hypothesis, multiple experiments are performed. The data is split into train, validate and test data. The train and validate data are used during the training phase of the algorithm, while the test data is used after the model is trained, to assess the obtained performance. The experiments are done using the test data. 
-\\
+
+\section{Experimental Modelling}
+
+\subsection{Data}
+
+To measure the performance of the algorithms and the validity of the hypothesis, multiple experiments are performed. The data is split into train, validate and test data. The train and validate data are used during the training phase of the algorithm, while the test data is used after the model is trained, to assess the obtained performance. The experiments are done using the validation data. Test data is used after the model is trained and the performance is assessed to manually test the algorithm, simulating its usage by an end user. 
+
+Data is collected as described in \ref{Datasets}. Because medical data is collected from Transylvania region, 
+
+\subsection{Metrics}
 
 Although the model needs to perform well, as it would be used in medical facilities and could affect the performance of the medical system, a small type I error is accepted, i.e. the model could predict a spike in the incidence of stroke, but in reality there is no spike. In this case, the medical staff would be prepared for stroke emergencies, but this does not have a negative impact on their performance. A type II error would mean that the model predicted no increase, so the doctors would not prepare for a spike that does appear in reality. This type of error should be minimized as much as possible in the model.
 \\
@@ -312,6 +318,26 @@ Value references that would validate the model:
     \item Recall $>$ 85\%
     \item F1-Score $>$ 80\%
 \end{itemize}
+
+\subsection{Formal Model}
+
+Mathematically, the experiments require in the first step calculations of differences by hours of the following parameters, seen as variables: temperature (T), atmospheric pressure (AP), humidity (H), wind direction (WD), wind speed (WS). For this first computation the values for these parameters for each hour are used and 24 differences are computed for every day as follows: 
+\\
+
+For hour taking values from 0 to 24 and V being each one of the parameters (T, AP, H, WD, WS):
+\begin{itemize}
+    \item E = (hour + 3) \% 24
+    \item S = hour 
+    \item V\_S-E = V\_E - V\_S 
+\end{itemize}
+
+\section{Case study}
+
+
+
+
+\section{Related Work}
+
 \newpage
 \section{Ethics}
 \section{Results}
