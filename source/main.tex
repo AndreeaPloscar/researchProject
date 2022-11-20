@@ -287,8 +287,6 @@ Changes in the weather conditions are often times linked to atmospheric fronts p
 
 The problem of predicting a sudden increase in the incidence of strokes  can be seen as a classification problem and a possible approach for this is using an artificial neural network. This ANN receives as input the weather conditions for a day and outputs 1 or 0, 1 if this day corresponds to an increase in stroke incidence, i.e. the conditions for this day match the previously learned model for days correlated to a larger number of patients admitted, 0 otherwise. 
 
-
-
 \section{Experimental Modelling}
 
 \subsection{Data}
@@ -333,17 +331,24 @@ For hour taking values from 0 to 24 and V being each one of the parameters (T, A
     \item V\_S-E = V\_E - V\_S 
 \end{itemize}
 
+The Artificial Neural Network used in the experiment computes the loss using the Cross Entropy loss function:
+
+\begin{equation}
+     H(p,q)\ =\ -\sum _{i}p_{i}\log q_{i}\ =\ -y\log {\hat {y}}-(1-y)\log(1-{\hat {y}})
+\end{equation}
+
+
 \section{Case study}
 
 To illustrate the methodology and approach of the presented paper, a case study is performed using an initial, smaller dataset. For this, the medical and meteorological records from Cluj-Napoca city are taken into consideration. The experiment can then be extended to cover a larger area.
 
-\subsection{Data preprocessing}
+\subsection{Data processing}
 
 Meteorological data is downloaded from Meteomanz.com, using the station code 15120, corresponding to Cluj-Napoca. The data covers the time interval 01.2013-12.2021. Medical data is collected from the public hospital in Cluj-Napoca and contains records from the same time interval.
 \\
 
-The data is preprocessed using the Pandas python library. More preprocessing is needed for meteorological data, as separate files are downloaded for data by days and data by hours. This information is aggregated to compute the 3 hours differences used further. The parameters taken into consideration are: temperature (T), atmospheric pressure (AP), humidity (H), wind direction
-(WD), wind speed (WS). The medical records contain information about the day of the stroke occurrence, gender, age and medical history. Only 20\% of the records give information about the exact time of the stroke, so this information is not kept, as completing the rest of the records with generated data would only induce errors.
+The data is processed using the Pandas python library. More processing is needed for meteorological data, as separate files are downloaded for data by days and data by hours. This information is aggregated to compute the 3 hours differences used further. The parameters taken into consideration are: temperature (T), atmospheric pressure (AP), humidity (H), wind direction
+(WD), wind speed (WS). The medical records contain information about the day of the stroke occurrence, gender, age and medical history. Only 20\% of the records give information about the exact time of the stroke, so this information is not kept, as completing the rest of the records with generated data would only induce errors. The data is split into 2 categories: train and test. The training dataset contains records from 07.2013-12.2021 and the testing one from 01.2013-06.2014. 
 
 \subsection{Data visualization}
 
@@ -390,17 +395,45 @@ The visual result matches the expected one, some days across the time interval h
 
 As it can be observed, some of these points have an extreme color for temperature difference as well, so these will be considered critical intervals. Days containing at least one critical interval are considered to be critical days.
 
-\subsubsection{Medical Data}
+\subsection{Data labeling}
 
-Clustering is used to provide information about medical data.  
+The data is automatically labeled with the following approach: every day that has at least one stroke incidence is considered to be critical. The data is loaded from the medical and meteorological datasets and the labeling is done by searching for each day of the 9 years in the medical records. If found, the received label has the value 1, otherwise 0.
 
-\subsection{Experiment Results}
+\subsection{Experiment  Results}
 
+An Artificial Neural Network is used to classify days in one of the two classes: critical or non-critical. The neural network contains 7 Linear layers with ReLU being used as activation function for each one. The first layer has 120 input channels representing the 120 features of each day (24 differences for each of the 5 parameters) and the last layer has 2 output channels representing the 2 classes: critical and non-critical.
+\\
+
+The model is trained with 15 epochs and the datasets are split and shuffled into batches of size 32. This increases the probability for the critical days to be uniformly distributed across batches. 
+\\
+
+For each epoch, the train accuracy, train loss (\ref{loss}) and test accuracy are computed and plotted. If the current value for the test accuracy is greater than the best one until this iteration, the model is saved as the best one (\ref{confmat}). During the validation phase, a confusion matrix is computed and the one for the best model is also plotted after the training is done. To better visualize the accuracy by classes and observe possible overfitting to one class, the evolution of these values by epochs are also plotted.
+
+
+\begin{figure*}[h!] 
+\begin{multicols}{2}
+
+\centering
+\includegraphics[height=4.5cm]{confmat.png}
+\caption{Confusion Matrix} 
+\label{confmat}
+
+\centering
+\includegraphics[height=4.5cm]{loss.png}
+\caption{Train Loss} 
+\label{loss}
+\end{multicols}
+\end{figure*}
 
 \section{Related Work}
 
+
+
 \newpage
 \section{Ethics}
+
+No medical data used in the present paper was collected without the consent of the patients and all data is anonymous.
+
 \section{Discussion}
 \section{Conclusion}
 \newpage
