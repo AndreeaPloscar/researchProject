@@ -5,6 +5,7 @@
 \geometry{a4paper,top=3cm,left=2cm,right=2cm,bottom=3cm}
 \usepackage{graphicx}
 \graphicspath{ {./} }
+\usepackage{amsmath}
 \usepackage[
 backend=biber,
 style=alphabetic,
@@ -297,7 +298,7 @@ Data is collected as described in \ref{datasets}. As medical data contains recor
 taken into consideration during the experiments. Not all cities appearing in the medical records have a weather station, so the closest weather station will be taken into consideration. 
 
 
-\subsection{Metrics}
+\subsection{Metrics} \label{metrics}
 
 Although the model needs to perform well, as it would be used in medical facilities and could affect the performance of the medical system, a small type I error is accepted, i.e. the model could predict a spike in the incidence of stroke, but in reality there is no spike. In this case, the medical staff would be prepared for stroke emergencies, but this does not have a negative impact on their performance. A type II error would mean that the model predicted no increase, so the doctors would not prepare for a spike that does appear in reality. This type of error should be minimized as much as possible in the model.
 \\
@@ -325,16 +326,28 @@ Mathematically, the experiments require in the first step calculations of differ
 \\
 
 For hour taking values from 0 to 24 and V being each one of the parameters (T, AP, H, WD, WS):
-\begin{itemize}
-    \item E = (hour + 3) \% 24
-    \item S = hour 
-    \item V\_S-E = V\_E - V\_S 
-\end{itemize}
+
+\begin{align}
+    \begin{cases}
+    E = (hour + 3) \% 24 \\
+    S = hour \\
+    V\_S-E = V\_E - V\_S 
+\end{cases}
+\end{align}
 
 The Artificial Neural Network used in the experiment computes the loss using the Cross Entropy loss function:
 
 \begin{equation}
      H(p,q)\ =\ -\sum _{i}p_{i}\log q_{i}\ =\ -y\log {\hat {y}}-(1-y)\log(1-{\hat {y}})
+\end{equation}
+
+The activation function used for the linear layers is ReLU:
+
+\begin{equation}
+f(x) = \begin{cases}
+             x  & \text{if } x > 0 \\
+             0  & \text{otherwise }
+       \end{cases} 
 \end{equation}
 
 
@@ -391,7 +404,6 @@ The visual result matches the expected one, some days across the time interval h
 
 \end{multicols}
 \end{figure*}
-\newpage
 
 As it can be observed, some of these points have an extreme color for temperature difference as well, so these will be considered critical intervals. Days containing at least one critical interval are considered to be critical days.
 
@@ -399,7 +411,7 @@ As it can be observed, some of these points have an extreme color for temperatur
 
 The data is automatically labeled with the following approach: every day that has at least one stroke incidence is considered to be critical. The data is loaded from the medical and meteorological datasets and the labeling is done by searching for each day of the 9 years in the medical records. If found, the received label has the value 1, otherwise 0.
 
-\subsection{Experiment  Results}
+\subsection{Experiment and Results}
 
 An Artificial Neural Network is used to classify days in one of the two classes: critical or non-critical. The neural network contains 7 Linear layers with ReLU being used as activation function for each one. The first layer has 120 input channels representing the 120 features of each day (24 differences for each of the 5 parameters) and the last layer has 2 output channels representing the 2 classes: critical and non-critical.
 \\
@@ -407,8 +419,9 @@ An Artificial Neural Network is used to classify days in one of the two classes:
 The model is trained with 15 epochs and the datasets are split and shuffled into batches of size 32. This increases the probability for the critical days to be uniformly distributed across batches. 
 \\
 
-For each epoch, the train accuracy, train loss (\ref{loss}) and test accuracy are computed and plotted. If the current value for the test accuracy is greater than the best one until this iteration, the model is saved as the best one (\ref{confmat}). During the validation phase, a confusion matrix is computed and the one for the best model is also plotted after the training is done. To better visualize the accuracy by classes and observe possible overfitting to one class, the evolution of these values by epochs are also plotted.
-
+For each epoch, the train accuracy(\ref{acc}), train loss (\ref{loss}) and test accuracy are computed and plotted. If the current value for the test accuracy is greater than the best one until this iteration, the model is saved as the best one (\ref{confmat}). During the validation phase, a confusion matrix is computed and the one for the best model is also plotted after the training is done. To better visualize the accuracy by classes and observe possible overfitting to one class, the evolution of these values by epochs are also plotted
+(\ref{accCl}).
+\\
 
 \begin{figure*}[h!] 
 \begin{multicols}{2}
@@ -422,9 +435,23 @@ For each epoch, the train accuracy, train loss (\ref{loss}) and test accuracy ar
 \includegraphics[height=4.5cm]{loss.png}
 \caption{Train Loss} 
 \label{loss}
+
+\centering
+\includegraphics[height=4.5cm]{plot4.png}
+\caption{Train Accuracy} 
+\label{acc}
+
+\centering
+\includegraphics[height=4.5cm]{plot5.png}
+\caption{Accuracy By Classes} 
+\label{accCl}
 \end{multicols}
 \end{figure*}
 
+
+Results show a high accuracy, but, as explained in \ref{metrics}, the False Negative values have a high impact on the performance of the model and the Recall is more relevant than the accuracy. In this experiment, the recall is 0, as there is no True Positive prediction. This behavior could appear as a result of a very large dataset with very few examples for positive classification. This is a possible explanation for our experiment as there are less than 70 positive values in more than 3000 records. An improvement could be made by simplifying the input data. The current input has 120 channels containing data about 5 weather parameters in 24 3 hours differences for each day. The input could contain only 5 input channels, one per weather parameter, and its value can be computed as the maximum difference for that parameter during the day. This approach could make a critical day more easily identifiable.
+
+\newpage
 \section{Related Work}
 
 
