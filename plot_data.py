@@ -1,19 +1,9 @@
-import numpy as np
 import pandas as pd
-import matplotlib as plot
 import glob
-import os
-import xlrd
-import openpyxl
 import matplotlib
 from bokeh.plotting import figure
-from pandas_bokeh import show
 
 matplotlib.use('TkAgg')
-import pyspark
-import geopandas
-import pandas_bokeh
-import matplotlib.pyplot as plt
 
 # -------- CLUJ-NAPOCA --------
 
@@ -30,7 +20,6 @@ path_days = "cluj_preprocessed.xlsx"
 file_days = glob.glob(path_days)
 data_days = pd.read_excel(file_days[0])
 dataframe_days = pd.DataFrame(data_days)
-
 
 dataframe_days['Date'] = pd.to_datetime(data_days['Date'], dayfirst=False, format="%Y/%m/%d")
 

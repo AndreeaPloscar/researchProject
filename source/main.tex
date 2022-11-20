@@ -233,7 +233,7 @@ Accesses: 411
 The present study adds value to the research in the medical and meteorological fields as it gives an answer to an important question: Can stroke incidence be predicted using weather conditions? The answer to this question would help healthcare professionals save more patients hospitalized with this health emergency, contributing to the decrease of mortality due to stroke. Especially in Romania, where the study is conducted, this would have a great impact on the healthcare system overall. In comparison to existing work, the study uses artificial intelligence: neural networks and clustering algorithms to find the specified correlation, is focused on a small area, Transylvania, Romania and uses data collected over nine years 2013-2021. 
 
 \newpage
-\section{Datasets}
+\section{Datasets} \label{datasets}
 \subsection{Meteorological Data}
 Numerical data is downloaded from Meteomanz.com and is collected from meteorological stations in Transylvania. The data contains collected values by days and by hours between Jan 2013 - Dec 2021. Data preprocessing includes formatting the values to be only numerical, removing redundant data. Because stroke incidence seems to be more related to the sudden differences in temperature and atmospheric pressure rather than their absolute values, these differences were computed using data collected by hours and added to the data by days dataset as columns for each line (day). The differences were computed for every 3 hours. For this process, the Pandas library from python was used. 
 
@@ -295,7 +295,9 @@ The problem of predicting a sudden increase in the incidence of strokes  can be 
 
 To measure the performance of the algorithms and the validity of the hypothesis, multiple experiments are performed. The data is split into train, validate and test data. The train and validate data are used during the training phase of the algorithm, while the test data is used after the model is trained, to assess the obtained performance. The experiments are done using the validation data. Test data is used after the model is trained and the performance is assessed to manually test the algorithm, simulating its usage by an end user. 
 
-Data is collected as described in \ref{Datasets}. Because medical data is collected from Transylvania region, 
+Data is collected as described in \ref{datasets}. As medical data contains records of strokes that occurred in multiple cities of Romania, multiple weather stations must be 
+taken into consideration during the experiments. Not all cities appearing in the medical records have a weather station, so the closest weather station will be taken into consideration. 
+
 
 \subsection{Metrics}
 
@@ -333,14 +335,72 @@ For hour taking values from 0 to 24 and V being each one of the parameters (T, A
 
 \section{Case study}
 
+To illustrate the methodology and approach of the presented paper, a case study is performed using an initial, smaller dataset. For this, the medical and meteorological records from Cluj-Napoca city are taken into consideration. The experiment can then be extended to cover a larger area.
 
+\subsection{Data preprocessing}
+
+Meteorological data is downloaded from Meteomanz.com, using the station code 15120, corresponding to Cluj-Napoca. The data covers the time interval 01.2013-12.2021. Medical data is collected from the public hospital in Cluj-Napoca and contains records from the same time interval.
+\\
+
+The data is preprocessed using the Pandas python library. More preprocessing is needed for meteorological data, as separate files are downloaded for data by days and data by hours. This information is aggregated to compute the 3 hours differences used further. The parameters taken into consideration are: temperature (T), atmospheric pressure (AP), humidity (H), wind direction
+(WD), wind speed (WS). The medical records contain information about the day of the stroke occurrence, gender, age and medical history. Only 20\% of the records give information about the exact time of the stroke, so this information is not kept, as completing the rest of the records with generated data would only induce errors.
+
+\subsection{Data visualization}
+
+\subsubsection{Meteorological Data}
+
+Before applying the algorithm, data visualization was used to observe the days considered more probable to match with stroke occurrences. 
+
+In the first trial we consider the temperature and pressure differences for every 3 hours as the main meteorological parameters and draw a 3D plot with these values over the full time interval. As the data in this plot (\ref{figure3D}) is not easily readable, a 2D plot with color gradient is also made (\ref{figure2DColor}). 
+
+\begin{figure}[ht] 
+\centering
+\includegraphics[height=7cm]{3dPlot.png} 
+\caption{3D plot of meteorological data}
+\label{figure3D}
+\end{figure}
+
+\begin{figure}[h!] 
+\centering
+\includegraphics[height=9cm]{newplot (1).png}
+\caption{2D plot of meteorological data} 
+\label{figure2DColor}
+\end{figure}
+
+\newpage
+
+The visual result matches the expected one, some days across the time interval have greater temperature and pressure differences and a possible negative relationship between these two parameters can be observed. Most points with a larger, positive difference in pressure have a negative difference in temperature and the other way around. Most of the point are located in the [-2.5, 2.5] interval on the pressure diff axis, so these values will be considered normal. A few points are located above 10 or below -10, these values will be omitted as there is a high probability they are errors. The values in the intervals [-10, -2.5] and [2.5, 10], represented in Figures \ref{interval1} and \ref{interval2} will be analysed further.
+
+\begin{figure*}[h!] 
+\begin{multicols}{2}
+
+\centering
+\includegraphics[height=4.6cm]{newplot (3).png}
+\caption{Interval [-10, -2.5]}
+\label{interval1}
+
+\centering
+\includegraphics[height=4.6cm]{newplot (2).png}
+\caption{Interval [2.5, 10]}
+\label{interval2}
+
+\end{multicols}
+\end{figure*}
+\newpage
+
+As it can be observed, some of these points have an extreme color for temperature difference as well, so these will be considered critical intervals. Days containing at least one critical interval are considered to be critical days.
+
+\subsubsection{Medical Data}
+
+Clustering is used to provide information about medical data.  
+
+\subsection{Experiment Results}
 
 
 \section{Related Work}
 
 \newpage
 \section{Ethics}
-\section{Results}
 \section{Discussion}
 \section{Conclusion}
 \newpage
