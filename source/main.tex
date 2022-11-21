@@ -448,12 +448,24 @@ For each epoch, the train accuracy(\ref{acc}), train loss (\ref{loss}) and test 
 \end{multicols}
 \end{figure*}
 
-
 Results show a high accuracy, but, as explained in \ref{metrics}, the False Negative values have a high impact on the performance of the model and the Recall is more relevant than the accuracy. In this experiment, the recall is 0, as there is no True Positive prediction. This behavior could appear as a result of a very large dataset with very few examples for positive classification. This is a possible explanation for our experiment as there are less than 70 positive values in more than 3000 records. An improvement could be made by simplifying the input data. The current input has 120 channels containing data about 5 weather parameters in 24 3 hours differences for each day. The input could contain only 5 input channels, one per weather parameter, and its value can be computed as the maximum difference for that parameter during the day. This approach could make a critical day more easily identifiable.
 
 \newpage
-\section{Related Work}
+\section{Related Work - Comparison}
 
+\subsection{Dataset}
+
+In order to make a relevant comparison between our paper and related work in this field, the dataset used in the experiments must be extended. For this, more meteorological data is collected from multiple weather stations across Transylvania and more medical records are taken into consideration, with the place of the incident being outside of Cluj-Napoca. To put all this data together, every stroke incident must be associated with the closest weather station that provides data for the specific day of the incident. This adds a new processing step that was not needed for the small data set covering Cluj-Napoca only. 
+
+\subsection{Approaches and Metrics}
+
+There are two main approaches for the presented problem in existing literature: statistical calculus and artificial intelligence, most studies using the first one. The data used in each paper is different, as it strongly depends on the geographical area covered by the study. Thus, no comparison can be made between our study and related work on the same data, but overall performance and approaches are relevant even if the input data is different. 
+\\
+
+One of the most relevant studies on stroke incidence correlated to weather conditions is by Knezovic et al. The paper is focused on data collected from Zagreb, Croatia, which has a similar climate to Romania, the area observed for the present study. However, the approach in \cite{Knezovic:2018dg} is very different, focusing on statistical methods, with no artificial intelligence involved. Their results show a seasonal variation of stroke occurrence, different per stroke subtype. 
+\\
+
+A study with an approach more similar to ours is \cite{Fang:2014dg}. The approach in this paper is centered around a Back Propagation Neural Network (BPNN), so although the used data is different, the methodology is similar, so the results are relevant. Fang et al. obtained a relative error of 6\% for 2010 early January, when the real value was 3.2 and the prediction was 3, a relative error of 7\% for mid January 2010, when the predicted incidence rate was 2.7 and the real one was 2.9. Overall, their predictions had an error between 6\% - 8\% and is considered "accurate and reasonable"(\cite{Fang:2014dg}).
 
 
 \newpage
