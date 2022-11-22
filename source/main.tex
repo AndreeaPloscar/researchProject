@@ -335,7 +335,7 @@ For hour taking values from 0 to 24 and V being each one of the parameters (T, A
 \end{cases}
 \end{align}
 
-The Artificial Neural Network used in the experiment computes the loss using the Cross Entropy loss function:
+The Artificial Neural Network used in the experiment computes the loss using the Cross Entropy loss function, where \(\hat{y}\) is the probability of the output y = 1:
 
 \begin{equation}
      H(p,q)\ =\ -\sum _{i}p_{i}\log q_{i}\ =\ -y\log {\hat {y}}-(1-y)\log(1-{\hat {y}})
@@ -453,7 +453,7 @@ Results show a high accuracy, but, as explained in \ref{metrics}, the False Nega
 \newpage
 \section{Related Work - Comparison}
 
-\subsection{Dataset}
+\subsection{Real Dataset}
 
 In order to make a relevant comparison between our paper and related work in this field, the dataset used in the experiments must be extended. For this, more meteorological data is collected from multiple weather stations across Transylvania and more medical records are taken into consideration, with the place of the incident being outside of Cluj-Napoca. To put all this data together, every stroke incident must be associated with the closest weather station that provides data for the specific day of the incident. This adds a new processing step that was not needed for the small data set covering Cluj-Napoca only. 
 
@@ -466,6 +466,8 @@ One of the most relevant studies on stroke incidence correlated to weather condi
 \\
 
 A study with an approach more similar to ours is \cite{Fang:2014dg}. The approach in this paper is centered around a Back Propagation Neural Network (BPNN), so although the used data is different, the methodology is similar, so the results are relevant. Fang et al. obtained a relative error of 6\% for 2010 early January, when the real value was 3.2 and the prediction was 3, a relative error of 7\% for mid January 2010, when the predicted incidence rate was 2.7 and the real one was 2.9. Overall, their predictions had an error between 6\% - 8\% and is considered "accurate and reasonable"(\cite{Fang:2014dg}).
+\\
+
 
 
 \newpage
